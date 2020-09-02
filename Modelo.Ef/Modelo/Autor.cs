@@ -18,10 +18,10 @@ namespace Modelo.Ef
     /// <summary>
     /// Sustituimos el tipo de Autor por GUID
     /// </summary>
-    public class Autor : AggregateRoot<Guid>
+    public class Autor : AggregateRoot<AutorID>
     {
 
-        private Autor(Guid id,int edad)
+        private Autor(AutorID id,int edad)
         {
             Identity = id;
             Edad = edad;
@@ -63,8 +63,8 @@ namespace Modelo.Ef
         public static Autor NewAutor(int edad)
         {
 
-            //var a = new Autor(AutorID.FromGuid(Guid.NewGuid()),edad);
-            var a = new Autor(Guid.NewGuid(), edad);
+            var a = new Autor(AutorID.FromGuid(Guid.NewGuid()),edad);
+           
             a.AddDomainEvent(new AutorCreadoEvent(a));
             return a;
         }

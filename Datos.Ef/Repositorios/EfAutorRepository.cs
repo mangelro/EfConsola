@@ -20,7 +20,7 @@ namespace Datos.Ef.Repositorios
     /// <summary>
     /// EfAutorRepository
     /// </summary>
-    public class EfAutorRepository : EfRepositoryBase<Autor, Guid>, IAutorRepository
+    public class EfAutorRepository : EfRepositoryBase<Autor, AutorID>, IAutorRepository
     {
 
         public EfAutorRepository(DbContext uow) : base(uow)

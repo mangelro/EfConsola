@@ -40,24 +40,15 @@ namespace Datos.Ef.Configuracion
                 .IsRequired();
 
 
-            //builder.Property(x => x.PublicadorId)
-            //    .HasColumnName("AuthorId")
-            //    .HasConversion(ConversionHelper.AutorIDConverter)
-            //    .IsRequired();
-
-
-            /*
+                  /*
              * Clave foranea de Autor.
              * Hay que declararla explícitamente ya que no sigue las convenciones de clave <class_name>Id sino que en 
              * la clase padre (Autor) la clave es la propiedad Identity
              */
             builder.Property(x => x.PublicadorId)
                 .HasColumnName("AuthorId")
+                .HasConversion(ConversionHelper.AutorIDConverter)
                 .IsRequired();
-
-
-            builder.Property(x => x.Posts)
-                .HasField("_posts");
 
             /*
              * Configura la propiedades de navegacion
@@ -65,7 +56,13 @@ namespace Datos.Ef.Configuracion
 
             builder.HasOne(b => b.Publicador)
                 .WithOne()
-                .HasPrincipalKey<Blog>(a=>a.PublicadorId);
+                .HasPrincipalKey<Blog>(a => a.PublicadorId);
+
+
+
+            builder.Property(x => x.Posts)
+                .HasField("_posts");
+
                 
                 
 

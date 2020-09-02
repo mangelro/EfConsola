@@ -21,7 +21,7 @@ namespace Datos.Ef.Configuracion
     /// <summary>
     /// AutorConfiguration
     /// </summary>
-    public class AutorMap : EntityMap<Autor, Guid>
+    public class AutorMap : EntityMap<Autor, AutorID>
     {
         public AutorMap() : base("AUTHOR_DB")
         { }
@@ -29,8 +29,8 @@ namespace Datos.Ef.Configuracion
         protected override void CustomConfigure(EntityTypeBuilder<Autor> builder)
         {
             builder.Property(a => a.Identity)
-                .HasColumnName("AuthorId");
-                //.HasConversion(ConversionHelper.AutorIDConverter)
+                .HasColumnName("AuthorId")
+                .HasConversion(ConversionHelper.AutorIDConverter);
                 //.ValueGeneratedNever();
 
             builder.Property(a => a.Nombre)

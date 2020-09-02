@@ -35,7 +35,7 @@ namespace Modelo.Ef
         /// <summary>
         /// Clave foranea de Autor
         /// </summary>
-        public Guid PublicadorId { get; private set; }
+        public AutorID PublicadorId { get; private set; }
 
         /// <summary>
         /// Propiedad de navegacion
