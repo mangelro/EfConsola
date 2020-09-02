@@ -20,7 +20,7 @@ namespace Datos.Ef.Repositorios
     /// </summary>
     public class EfProyectoRepository : EfRepositoryBase<Proyecto, ProyectoCode>, IProyectoRepository
     {
-        public EfProyectoRepository(DbContext uow) : base(uow)
+        public EfProyectoRepository(EfUoW uow) : base(uow)
         { }
     }
 }

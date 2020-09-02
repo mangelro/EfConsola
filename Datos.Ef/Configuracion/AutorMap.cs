@@ -29,9 +29,9 @@ namespace Datos.Ef.Configuracion
         protected override void CustomConfigure(EntityTypeBuilder<Autor> builder)
         {
             builder.Property(a => a.Identity)
-                .HasColumnName("AuthorId");
-                //.HasConversion(ConversionHelper.AutorIDConverter)
-                //.ValueGeneratedNever();
+                .HasColumnName("AuthorId")
+                .HasConversion(ConversionHelper.GuidStringConverter);
+
 
             builder.Property(a => a.Nombre)
                 .HasColumnName("Name")

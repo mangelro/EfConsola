@@ -28,13 +28,13 @@ namespace Datos.Ef.Repositorios
     {
 
 
-        protected EfRepositoryBase(DbContext context)
+        protected EfRepositoryBase(EfUoW context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
             Set =  Context.Set<TEntity>();
         }
 
-        protected DbContext Context { get; }
+        protected EfUoW Context { get; }
 
         protected DbSet<TEntity> Set { get; }
 
@@ -52,6 +52,9 @@ namespace Datos.Ef.Repositorios
         public void Add(TEntity entity)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
+
+
+            if (!Context.IsBeginning) throw new Exception("Debe encontrarse dentro de una Transacción activa.");
 
             Adding(entity);
 
@@ -71,6 +74,10 @@ namespace Datos.Ef.Repositorios
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
 
+
+            if (!Context.IsBeginning) throw new Exception("Debe encontrarse dentro de una Transacción activa.");
+
+
             //Permite liberar recursos de la entidad
             if (entity is IDisposable disposable)
                 disposable.Dispose();
@@ -87,6 +94,8 @@ namespace Datos.Ef.Repositorios
         public void Update(TEntity entity)
         {
             if (entity is null) throw new ArgumentNullException(nameof(entity));
+
+            if (!Context.IsBeginning) throw new Exception("Debe encontrarse dentro de una Transacción activa.");
 
             /* SOLO PARA EF6.x
                 var entry = Context.Entry(entity);

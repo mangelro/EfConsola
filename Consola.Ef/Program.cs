@@ -34,8 +34,8 @@ namespace EfConsola
                 //CrearAutor(uow, repoFactory);
                 //ConsultarAutor(repoFactory);
                 //ModificarAutor(uow,repoFactory);
-                //CrearBlog(uow,repoFactory);
-                ConsultarBlog(uow, repoFactory);
+                CrearBlog(uow,repoFactory);
+                //ConsultarBlog(uow, repoFactory);
                 //LimpiarBlogPost(uow, repoFactory);
                 //AddBlogPost(uow);
                 //CrearProyecto(uow, repoFactory);
@@ -115,9 +115,10 @@ namespace EfConsola
 
 
             var blog = Blog.NewBlog();
+            
             blog.EstablecerAutor(autor);
-            blog.EstablecerUrl("http://www.oliva2.net");
-
+            
+            blog.EstablecerUrl("http://www.oliva3.net");
 
             //var p1 = blog.AddPost("Titulo 1", "Este es el primer post");
             //p1.EstablecerValoracion(Valoracion.FromInteger(2));
@@ -132,9 +133,6 @@ namespace EfConsola
             blogRepo.Add(blog);
 
             uow.Commit();
-
-
-
         }
 
         private static void ConsultarBlog(IUnitOfWork uow, RepositoryFactory factory)
@@ -251,6 +249,7 @@ namespace EfConsola
             builder.RegisterType<EfUoW>()
                 .As<IUnitOfWork>()
                 .As<DbContext>()
+                .AsSelf()
                 .SingleInstance(); //No me gusta 
 
 

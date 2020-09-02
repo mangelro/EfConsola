@@ -138,15 +138,20 @@ namespace Datos.Ef
             }
         }
 
+        /// <summary>
+        /// Determina si la trasacción ha sido inicializada o no
+        /// </summary>
+        public bool IsBeginning => _wrapper?.IsDisposed == false; //COMORRRRR
+
         private void ThrowIfNotTransaction()
         {
-            if (_wrapper == null || _wrapper.IsDisposed)
+            if (!IsBeginning)
                 throw new Exception("No existe una Transacción activa");
         }
 
         private void ThrowIfTransaction()
         {
-            if (_wrapper != null && !_wrapper.IsDisposed)
+            if (IsBeginning)
                 throw new Exception("Ya existe una Transacción activa");
         }
 
@@ -208,7 +213,7 @@ namespace Datos.Ef
         }
 
         /// <summary>
-        ///
+        /// Publica los eventos,si existen, de los Aggregates afectados en la trasacción
         /// </summary>
         /// <param name="changedRoots"></param>
         /// <returns></returns>

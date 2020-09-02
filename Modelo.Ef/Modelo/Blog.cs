@@ -50,7 +50,7 @@ namespace Modelo.Ef
         public void EstablecerAutor(Autor autor)
         {
            Publicador = autor;
-           //PublicadorId= autor.Identity;
+           PublicadorId= autor.Identity;
         }
 
         public Post AddPost(string titulo, string contenido)

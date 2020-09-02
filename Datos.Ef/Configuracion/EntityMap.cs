@@ -37,7 +37,6 @@ namespace Datos.Ef.Configuracion
             builder.ToTable(_tableName)
                 .HasKey(e => e.Identity);
 
-
             CustomConfigure(builder);
         }
 

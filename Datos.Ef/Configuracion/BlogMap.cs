@@ -39,13 +39,6 @@ namespace Datos.Ef.Configuracion
                 .HasMaxLength(255)
                 .IsRequired();
 
-
-            //builder.Property(x => x.PublicadorId)
-            //    .HasColumnName("AuthorId")
-            //    .HasConversion(ConversionHelper.AutorIDConverter)
-            //    .IsRequired();
-
-
             /*
              * Clave foranea de Autor.
              * Hay que declararla explícitamente ya que no sigue las convenciones de clave <class_name>Id sino que en 
@@ -53,6 +46,7 @@ namespace Datos.Ef.Configuracion
              */
             builder.Property(x => x.PublicadorId)
                 .HasColumnName("AuthorId")
+                .HasConversion(ConversionHelper.GuidStringConverter)
                 .IsRequired();
 
 
@@ -65,12 +59,8 @@ namespace Datos.Ef.Configuracion
 
             builder.HasOne(b => b.Publicador)
                 .WithOne()
-                .HasPrincipalKey<Blog>(a=>a.PublicadorId);
-                
-                
+                .HasPrincipalKey<Blog>(a => a.PublicadorId);
 
-                
-               
 
             builder.Ignore(x => x.Posts);
 

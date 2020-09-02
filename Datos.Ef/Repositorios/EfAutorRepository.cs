@@ -9,10 +9,6 @@
 
 using System;
 
-using FundacionOlivar.DDD.SharedKernel;
-
-using Microsoft.EntityFrameworkCore;
-
 using Modelo.Ef;
 
 namespace Datos.Ef.Repositorios
@@ -23,7 +19,7 @@ namespace Datos.Ef.Repositorios
     public class EfAutorRepository : EfRepositoryBase<Autor, Guid>, IAutorRepository
     {
 
-        public EfAutorRepository(DbContext uow) : base(uow)
+        public EfAutorRepository(EfUoW uow) : base(uow)
         { }
 
     }

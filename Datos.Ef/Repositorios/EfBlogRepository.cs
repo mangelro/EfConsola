@@ -24,13 +24,13 @@ namespace Datos.Ef.Repositorios
 
 
 
-        public EfBlogRepository(DbContext uow) : base(uow)
+        public EfBlogRepository(EfUoW uow) : base(uow)
         { }
 
         public override Blog GetById(int id)
         {
             return Set.Where(b => b.Identity == id)
-                .Include(b=>b.Publicador) //Eager loading
+                .Include(b => b.Publicador) //Eager loading
                 .FirstOrDefault();
         }
 

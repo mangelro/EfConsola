@@ -38,6 +38,11 @@ namespace Datos.Ef.Configuracion.Core
          v => AutorID.FromString(v));
 
 
+        public static ValueConverter<Guid, string> GuidStringConverter = new ValueConverter<Guid, string>(
+        v => v.ToString(),
+        v => Guid.Parse(v));
+
+
         public static ValueConverter<ProyectoCode, string> ProyectoCodeConverter = new ValueConverter<ProyectoCode, string>(
          v => v.ToString(),
          v => ProyectoCode.FromString(v));
