@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FundacionOlivar.DDD\FundacionOlivar.DDD.csproj" />
+    <ProjectReference Include="..\..\FundacionOlivar.DDD.SharedKernel\FundacionOlivar.DDD.SharedKernel\FundacionOlivar.DDD.SharedKernel.csproj" />
   </ItemGroup>
 
 </Project>

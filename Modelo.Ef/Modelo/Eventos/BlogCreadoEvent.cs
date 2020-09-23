@@ -21,13 +21,18 @@ namespace Modelo.Ef.Eventos
     /// </summary>
     public class BlogCreadoEvent : IDomainEvent
     {
-        public DateTime DateOccurred => DateTime.UtcNow;
 
         public Blog BlogCreado { get; }
+
+        public Guid EventID { get; }
+
+        public DateTime When { get; }
 
         public BlogCreadoEvent(Blog creado)
         {
             BlogCreado = creado;
+            When = DateTime.UtcNow;
+            EventID = Guid.NewGuid();
         }
 
     }

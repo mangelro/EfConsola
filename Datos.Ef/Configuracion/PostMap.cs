@@ -51,9 +51,9 @@ namespace Datos.Ef.Configuracion
                 .IsRequired();
 
 
-            builder.Property(x => x.BlogId)
-                .HasColumnName("BlogId")
-                .IsRequired();
+            //builder.Property(x => x.BlogId)
+            //    .HasColumnName("BlogId")
+            //    .IsRequired();
 
 
             builder.Property(x => x.Activo)

@@ -50,8 +50,7 @@ namespace Datos.Ef.Configuracion
                 .IsRequired();
 
 
-            builder.Property(x => x.Posts)
-                .HasField("_posts");
+            
 
             /*
              * Configura la propiedades de navegacion
@@ -61,6 +60,13 @@ namespace Datos.Ef.Configuracion
                 .WithOne()
                 .HasPrincipalKey<Blog>(a => a.PublicadorId);
 
+
+            //builder.Metadata
+            //    .FindNavigation(nameof(Blog.Posts))
+            //    .SetPropertyAccessMode(PropertyAccessMode.Field);
+
+            builder.Property(x => x.Posts)
+                .HasField("_posts");
 
             builder.Ignore(x => x.Posts);
 

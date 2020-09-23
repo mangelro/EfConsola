@@ -37,11 +37,26 @@ namespace Datos.Ef.Configuracion
                 .HasColumnName("Name")
                 .HasMaxLength(256)
                 .IsRequired()
-                .IsUnicode(); 
+                .IsUnicode();
 
 
-            builder.Property(a => a.Edad)
-                .HasColumnName("Years");
+            builder.Property("_fechaNacimiento")
+                .HasColumnName("DateOfBirth")
+                .HasConversion(ConversionHelper.DateTimeOffsetConverter);
+
+
+
+            builder.Ignore(a => a.Edad);
+
+            /*
+             * SQLite no admite HasComputedColumnSql
+             * 
+             */
+
+            //builder.Property(a => a.Edad)
+            //    .ValueGeneratedOnAddOrUpdate()
+            //    .HasComputedColumnSql("strftime('%Y', [DateOfBirth]))");
+
 
             //builder.OwnsOne(
             //        x => x.Direccion,

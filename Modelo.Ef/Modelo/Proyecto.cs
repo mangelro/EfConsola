@@ -8,17 +8,15 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 using FundacionOlivar.DDD.Core;
-using FundacionOlivar.DDD.SharedKernel;
 
 namespace Modelo.Ef
 {
     /// <summary>
     /// Proyecto
     /// </summary>
-    public class Proyecto : SurrogateEntity<ProyectoCode>,IAuditable
+    public class Proyecto : SurrogateEntity<Proyecto, ProyectoCode>, IAuditable
     {
 
         protected Proyecto() { }
@@ -35,7 +33,7 @@ namespace Modelo.Ef
         public DateTimeOffset FechaFinalizacion { get; private set; }
 
         public string Nombre { get; private set; }
-    
+
         public void EstablecerNombre(string nombre)
         {
             Nombre = nombre;

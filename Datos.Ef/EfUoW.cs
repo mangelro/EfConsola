@@ -119,8 +119,19 @@ namespace Datos.Ef
 
             try
             {
+
+                /*
+                 * http://lostechies.com/jimmybogard/2014/05/13/a-better-domain-events-pattern/
+                 * Se propone publicar los eventos antes de confirmar la trasacción
+                 * An event is something that happened, it's in the past. 
+                 * Thus, an event handler simply can't (it shouldn't) change the event, 
+                 * it's like changing the past.
+                 * Domain Events pattern: an operation is simply a chain of command -> event -> command -> event -> etc.
+                 */
+
                 int changedEntities = base.SaveChanges();
                 System.Diagnostics.Debug.WriteLine($"{changedEntities} afectadas en la transacción");
+             
                 _wrapper.Transaction.Commit();
 
                 PublishingEvents(changedRoots);
@@ -134,7 +145,6 @@ namespace Datos.Ef
             {
                 _wrapper.Dispose();
                 _sincronizar.Set();
-
             }
         }
 
@@ -181,16 +191,18 @@ namespace Datos.Ef
         //}
 
         /// <summary>
-        /// Retorna los Aggregates afectados en la transacción
+        /// Retorna los Aggregates Root afectados en la transacción
         /// </summary>
         /// <returns></returns>
         private IEnumerable<IAggregateRoot> GetAggregateRootAffected()
         {
-            IEnumerable<EntityEntry> affected = ChangeTracker.Entries();
+            //IEnumerable<EntityEntry> affected = ChangeTracker.Entries<>();
 
-            return affected.Select(e => e.Entity)
-                .OfType<IAggregateRoot>()
-                .ToList();
+            //return affected.Select(e => e.Entity)
+            //    .OfType<IAggregateRoot>()
+            //    .ToList();
+
+            return ChangeTracker.Entries<IAggregateRoot>().Select(e=>e.Entity);
         }
 
         /// <summary>
@@ -199,7 +211,7 @@ namespace Datos.Ef
         /// <param name="changedRoots"></param>
         private void PublishingEvents(IEnumerable<IAggregateRoot> changedRoots)
         {
-            IEnumerable<IDomainEvent> events = changedRoots
+            List<IDomainEvent> events = changedRoots
                                                     .Where(r => r.Events.Any())
                                                     .SelectMany(r => r.Events)
                                                     .ToList();
@@ -276,10 +288,21 @@ namespace Datos.Ef
     {
         public static ModelBuilder AddAuditableProperties(this ModelBuilder modelBuilder)
         {
+
+
+                        
+
+
+
+
             // loop over all entities
             foreach (var entity in modelBuilder.Model.GetEntityTypes()
                 .Where(x => typeof(IAuditable).IsAssignableFrom(x.ClrType)))
             {
+
+                //entity.AddProperty("Timestamp", typeof(long))
+                //    .AddAnnotation("Timestamp",null);
+
                 entity.AddProperty(AuditableField.CREADOPOR_FIELD, typeof(string));
 
                 entity.AddProperty(AuditableField.CREADOEN_FIELD, typeof(DateTimeOffset))

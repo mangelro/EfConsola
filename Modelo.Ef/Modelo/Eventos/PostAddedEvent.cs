@@ -21,14 +21,19 @@ namespace Modelo.Ef.Eventos
     /// </summary>
     public class PostAddedEvent: IDomainEvent
     {
-        public DateTime DateOccurred => DateTime.UtcNow;
 
         public Post PostAdded { get; }
+
+        public Guid EventID { get; }
+
+        public DateTime When { get; }
 
         public  PostAddedEvent(Post added)
         {
 
             PostAdded = added;
+            When = DateTime.UtcNow;
+            EventID = Guid.NewGuid();
         }
 
     }

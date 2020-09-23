@@ -1,6 +1,7 @@
 ﻿
 
-namespace Modelo.Ef
+namespace Modelo.Ef.Core
+
 {
     public interface IAuditable
     {

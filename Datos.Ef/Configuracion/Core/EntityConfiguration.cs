@@ -20,7 +20,7 @@ namespace Datos.Ef.Configuracion.Core
     /// EntityConfiguration
     /// </summary>
     public abstract class EntityConfiguration<TEntity, TKey> : IEntityTypeConfiguration<TEntity>
-        where TEntity : class, IEntity<TKey>
+        where TEntity : class, IEntity<TEntity,TKey>
         where TKey : IEquatable<TKey>
     {
 

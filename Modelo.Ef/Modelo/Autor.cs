@@ -18,13 +18,15 @@ namespace Modelo.Ef
     /// <summary>
     /// Sustituimos el tipo de Autor por GUID
     /// </summary>
-    public class Autor : AggregateRoot<Guid>
+    public class Autor : AggregateRoot<Autor,Guid>
     {
 
-        private Autor(Guid id,int edad)
+        DateTimeOffset _fechaNacimiento;
+
+        private Autor(Guid id,DateTimeOffset fechaNacimiento)
         {
             Identity = id;
-            Edad = edad;
+            _fechaNacimiento = fechaNacimiento;
         }
 
         protected Autor() { }
@@ -32,25 +34,26 @@ namespace Modelo.Ef
 
         public string Nombre { get; private set; }
 
-        public int Edad { get; private set; }
+
+        public int Edad => (int)((DateTimeOffset.Now - _fechaNacimiento).TotalDays / 365);
+        //public int Edad { get; set; }
 
         public Direccion Direccion { get; private set; }
-
 
         public void EstablecerNombre(string nombreAutor)
         {
             Nombre = nombreAutor;
         }
-
-        public void EstablecerEdad(int edad)
-        {
-            Edad = edad;
-        }
-
+    
 
         public void EstablecerDireccion(Direccion direccion)
         {
             Direccion = direccion;
+        }
+
+        public void EstablecerFechaNacimiento(DateTimeOffset fechaNacimiento)
+        {
+            _fechaNacimiento = fechaNacimiento;
         }
 
         public override string ToString()
@@ -59,13 +62,12 @@ namespace Modelo.Ef
         }
 
 
-
-        public static Autor NewAutor(int edad)
+        public static Autor NewAutor(DateTime fechaNacimiento)
         {
 
             //var a = new Autor(AutorID.FromGuid(Guid.NewGuid()),edad);
-            var a = new Autor(Guid.NewGuid(), edad);
-            a.AddDomainEvent(new AutorCreadoEvent(a));
+            var a = new Autor(Guid.NewGuid(),new DateTimeOffset( fechaNacimiento));
+            a.AddEvents(new AutorCreadoEvent(a));
             return a;
         }
 

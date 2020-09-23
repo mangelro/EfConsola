@@ -12,6 +12,7 @@ using System.Collections.Generic;
 
 using FundacionOlivar.DDD.Core;
 
+using Modelo.Ef.Core;
 using Modelo.Ef.Eventos;
 
 namespace Modelo.Ef
@@ -20,7 +21,7 @@ namespace Modelo.Ef
     /// Blog
     /// </summary>
     /// 
-    public class Blog : AggregateRoot<int>, IAuditable
+    public class Blog : AggregateRoot<Blog,int>, IAuditable
     {
 
         protected Blog()
@@ -65,11 +66,14 @@ namespace Modelo.Ef
 
             _posts.Add(post);
 
-            AddDomainEvent(new PostAddedEvent(post));
+            AddEvents(new PostAddedEvent(post));
 
             return post;
         }
 
+        /// <summary>
+        /// Post del 
+        /// </summary>
         public IReadOnlyList<Post> Posts => _posts;
 
 
@@ -86,7 +90,7 @@ namespace Modelo.Ef
         public static Blog NewBlog()
         {
             var b = new Blog();
-            b.AddDomainEvent(new BlogCreadoEvent(b));
+            b.AddEvents(new BlogCreadoEvent(b));
             return b;
         }
     }

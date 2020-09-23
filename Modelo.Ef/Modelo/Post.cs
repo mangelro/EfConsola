@@ -16,7 +16,7 @@ namespace Modelo.Ef
     /// <summary>
     /// Post
     /// </summary>
-    public class Post : BaseEntity<int>
+    public class Post : Entity<Post,int>
     {
 
         protected internal Post() { }
@@ -35,9 +35,9 @@ namespace Modelo.Ef
         /// </summary>
         public bool Activo => _activo;
 
-        public int BlogId { get; }
+      //  public int BlogId { get; }
 
-        public Blog Blog { get; }
+       // public Blog Blog { get; }
 
 
 

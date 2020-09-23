@@ -20,8 +20,7 @@ namespace Datos.Ef.Configuracion.Core
     /// </summary>
     public static class ConversionHelper
     {
-        private readonly static string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss.fff";
-
+        private readonly static string DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss.fff"; // ISO8601 strings ("YYYY-MM-DD HH:MM:SS.SSS").
 
         public static ValueConverter<Valoracion, int> ValoracionConverter = new ValueConverter<Valoracion, int>(
             v => (int)v,

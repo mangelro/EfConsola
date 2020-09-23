@@ -21,14 +21,19 @@ namespace Modelo.Ef.Eventos
     /// </summary>
     public class AutorCreadoEvent : IDomainEvent
     {
-        public DateTime DateOccurred => DateTime.UtcNow;
-
+        
         public Autor AutorCreado { get; }
 
+        public Guid EventID { get; }
+
+        public DateTime When { get; }
 
         public AutorCreadoEvent(Autor creado)
         {
             AutorCreado = creado;
+            When = DateTime.UtcNow;
+            EventID = Guid.NewGuid();
+
         }
     }
 }

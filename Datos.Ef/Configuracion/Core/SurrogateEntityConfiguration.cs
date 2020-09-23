@@ -20,7 +20,7 @@ namespace Datos.Ef.Configuracion.Core
     /// EntityConfiguration
     /// </summary>
     public abstract class SurrogateEntityConfiguration<TEntity, TKey> : IEntityTypeConfiguration<TEntity>
-        where TEntity : SurrogateEntity<TKey>
+        where TEntity : SurrogateEntity<TEntity, TKey>
         where TKey : IEquatable<TKey>
     {
 
@@ -41,9 +41,9 @@ namespace Datos.Ef.Configuracion.Core
             _builder = builder;
 
             _builder.ToTable(_tableName)
-                .HasKey(e => e.Key);
+                .HasKey(e => e.DBKey);
 
-            _builder.Property(e => e.Key)
+            _builder.Property(e => e.DBKey)
                 .HasColumnName(_keyColumnName)
                 .ValueGeneratedOnAdd();
 
@@ -54,7 +54,7 @@ namespace Datos.Ef.Configuracion.Core
         protected abstract void CustomConfigure(EntityTypeBuilder<TEntity> builder);
 
 
-        protected void NaturalId (Action<EntityTypeBuilder<TEntity>> action) 
+        protected void NaturalId(Action<EntityTypeBuilder<TEntity>> action)
         {
             action(_builder);
         }

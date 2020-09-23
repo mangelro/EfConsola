@@ -33,8 +33,8 @@ namespace EfConsola
 
                 //CrearAutor(uow, repoFactory);
                 //ConsultarAutor(repoFactory);
-                //ModificarAutor(uow,repoFactory);
-                CrearBlog(uow,repoFactory);
+                ModificarAutor(uow,repoFactory);
+                //CrearBlog(uow,repoFactory);
                 //ConsultarBlog(uow, repoFactory);
                 //LimpiarBlogPost(uow, repoFactory);
                 //AddBlogPost(uow);
@@ -55,7 +55,7 @@ namespace EfConsola
 
             uow.Begin();
 
-            var autor = Autor.NewAutor(22);
+            var autor = Autor.NewAutor(new DateTime(1974,10,22));
 
             autor.EstablecerNombre("Miguel Á. Romera");
             autor.EstablecerDireccion(new Direccion("Merced alta n1 3C", "Jaén", "23002", "JAEN", "ESPAÑA"));
@@ -76,7 +76,7 @@ namespace EfConsola
             IAutorRepository autorRepo = factory.GetInstance<IAutorRepository>();// uow.GetRepository<IAutorRepository>();
 
             //var autorA = autorRepo.GetById(AutorID.FromString("01e5fcfe-3a8c-4ffb-ad7a-8958d75d4f4a"));
-            var autorA = autorRepo.GetById(Guid.Parse("01e5fcfe-3a8c-4ffb-ad7a-8958d75d4f4a"));
+            var autorA = autorRepo.GetById(Guid.Parse("1b35faac-3406-486c-9470-1138446548ee"));
 
             // uow.Commit();
 
@@ -87,18 +87,15 @@ namespace EfConsola
         {
 
             IAutorRepository autorRepo = factory.GetInstance<IAutorRepository>(); //uow.GetRepository<IAutorRepository>();
+            var autor = autorRepo.GetById(Guid.Parse("1b35faac-3406-486c-9470-1138446548ee"));
 
             uow.Begin();
 
-
             //var autor = autorRepo.GetById(AutorID.FromString("42d8b4d3-ec22-4fd0-a7d8-2a1c653db1a7"));
-            var autor = autorRepo.GetById(Guid.Parse("42d8b4d3-ec22-4fd0-a7d8-2a1c653db1a7"));
 
-            autor.EstablecerEdad(55);
+            autor.EstablecerFechaNacimiento(new DateTimeOffset(1979,10,30,0,0,0,TimeSpan.Zero));
 
-
-            //autorRepo.Update(autor);
-
+            autorRepo.Update(autor);
             uow.Commit();
 
         }

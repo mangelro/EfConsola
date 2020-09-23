@@ -28,7 +28,7 @@ namespace EfConsola.Infraestructura
 
         public void Publish<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
         {
-            System.Diagnostics.Debug.WriteLine($"Publicando evento {domainEvent.GetType().FullName} [{domainEvent.DateOccurred}]");
+            System.Diagnostics.Debug.WriteLine($"Publicando evento {domainEvent.GetType().FullName} [{domainEvent.When}]");
         }
 
         public Task PublishAsync<TEvent>(TEvent domainEvent, CancellationToken cancellationToken = default) where TEvent : IDomainEvent

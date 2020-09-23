@@ -23,7 +23,7 @@ namespace Datos.Ef.Repositorios
     /// EfAutorRepository
     /// </summary>
     public class EfRepositoryBase<TEntity, TIdentity> : IRepository<TEntity, TIdentity>
-        where TEntity : class, IEntity<TIdentity>, IAggregateRoot
+        where TEntity : class, IAggregateRoot<TEntity,TIdentity>
         where TIdentity : IEquatable<TIdentity>
     {
 
@@ -107,6 +107,11 @@ namespace Datos.Ef.Repositorios
             */
 
             Set.Update(entity);
+        }
+
+        public TIdentity NextIdentity()
+        {
+            throw new NotImplementedException();
         }
     }
 }
