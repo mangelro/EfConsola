@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Modelo.Ef", "Modelo.Ef\Mode
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Consola.Ef", "Consola.Ef\Consola.Ef.csproj", "{64146A03-4554-43C1-B006-88CCC355C1B1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundacionOlivar.DDD.SharedKernel", "..\FundacionOlivar.DDD.SharedKernel\FundacionOlivar.DDD.SharedKernel\FundacionOlivar.DDD.SharedKernel.csproj", "{5E06EAF6-09BA-4BD6-A895-3E4945D4108B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FundacionOlivar.DDD", "..\FundacionOlivar\FundacionOlivar.DDD\FundacionOlivar.DDD.csproj", "{8D92C0C8-B391-4AA2-AC75-3B9BC0053AAB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -29,10 +29,10 @@ Global
 		{64146A03-4554-43C1-B006-88CCC355C1B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64146A03-4554-43C1-B006-88CCC355C1B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64146A03-4554-43C1-B006-88CCC355C1B1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{5E06EAF6-09BA-4BD6-A895-3E4945D4108B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5E06EAF6-09BA-4BD6-A895-3E4945D4108B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5E06EAF6-09BA-4BD6-A895-3E4945D4108B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5E06EAF6-09BA-4BD6-A895-3E4945D4108B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8D92C0C8-B391-4AA2-AC75-3B9BC0053AAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8D92C0C8-B391-4AA2-AC75-3B9BC0053AAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8D92C0C8-B391-4AA2-AC75-3B9BC0053AAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8D92C0C8-B391-4AA2-AC75-3B9BC0053AAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

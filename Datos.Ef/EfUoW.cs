@@ -24,7 +24,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage;
 
-using Modelo.Ef;
+using Modelo.Ef.Core;
 
 namespace Datos.Ef
 {
@@ -33,19 +33,27 @@ namespace Datos.Ef
     /// </summary>
     public sealed class EfUoW : DbContext, IUnitOfWork
     {
-        private readonly IDomainEventPublisher _publisher;
+        private readonly IEventPublisher _publisher;
 
         private readonly AutoResetEvent _sincronizar = new AutoResetEvent(true);
+
+        private readonly ITenantProvider _tenantProvider;
+
+        private readonly IEnumerable<IEntityTypeConfiguration<IEntity>> _mapeados;
 
         // private readonly IUoWConfig _config;
         private TransactionWrapper _wrapper;
 
-        public EfUoW(IUoWConfig config, IDomainEventPublisher publisher)
+
+        public EfUoW(ITenantProvider tenantProvider,
+            IUoWConfig config,
+            IEventPublisher publisher)
             : base(GetOptions(config.ConnectionString))
         {
             _publisher = publisher;
+            _tenantProvider = tenantProvider;
         }
-        
+
         public EfUoW(DbContextOptions<EfUoW> options) : base(options)
         {
         }
@@ -60,7 +68,15 @@ namespace Datos.Ef
 
             modelBuilder.ApplyConfiguration(new ProyectoMap());
 
+            modelBuilder.ApplyConfiguration(new ItemProyectoMap());
+
+            //-----------------------------------------------------
+
             modelBuilder.AddAuditableProperties();
+
+            modelBuilder.AddTenantProperty();
+
+            modelBuilder.SetTenantFilter(_tenantProvider.ApplicationId);
 
             base.OnModelCreating(modelBuilder);
         }
@@ -112,6 +128,8 @@ namespace Datos.Ef
         {
             ThrowIfNotTransaction();
 
+            SetTenantInfo(_tenantProvider.ApplicationId);
+
             SetAuditableInfo();
 
             //AggregateRoots afectados en la consulta
@@ -131,7 +149,7 @@ namespace Datos.Ef
 
                 int changedEntities = base.SaveChanges();
                 System.Diagnostics.Debug.WriteLine($"{changedEntities} afectadas en la transacción");
-             
+
                 _wrapper.Transaction.Commit();
 
                 PublishingEvents(changedRoots);
@@ -182,6 +200,17 @@ namespace Datos.Ef
             }
         }
 
+        private void SetTenantInfo(Guid tenant)
+        {
+            foreach (var entry in GetEntriesAffected(e => e.State == EntityState.Added))
+            {
+                if (entry.Entity is ITenant)
+                {
+                    entry.Property(TenantField.TENANT_FIELD).CurrentValue = tenant.ToString();
+                }
+            }
+        }
+
         //public void Rollback()
         //{
         //        ChangeTracker
@@ -202,7 +231,7 @@ namespace Datos.Ef
             //    .OfType<IAggregateRoot>()
             //    .ToList();
 
-            return ChangeTracker.Entries<IAggregateRoot>().Select(e=>e.Entity);
+            return ChangeTracker.Entries<IAggregateRoot>().Select(e => e.Entity);
         }
 
         /// <summary>
@@ -262,7 +291,7 @@ namespace Datos.Ef
 
         public override void Dispose()
         {
-           _sincronizar.Dispose();
+            _sincronizar.Dispose();
             base.Dispose();
         }
 
@@ -286,15 +315,14 @@ namespace Datos.Ef
 
     public static class ModelBuilderHelper
     {
+        /// <summary>
+        /// Agrega los campo shadows de auditoria a las entidades que están marcadas 
+        /// con la interfaz IAuditable
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        /// <returns></returns>
         public static ModelBuilder AddAuditableProperties(this ModelBuilder modelBuilder)
         {
-
-
-                        
-
-
-
-
             // loop over all entities
             foreach (var entity in modelBuilder.Model.GetEntityTypes()
                 .Where(x => typeof(IAuditable).IsAssignableFrom(x.ClrType)))
@@ -303,14 +331,70 @@ namespace Datos.Ef
                 //entity.AddProperty("Timestamp", typeof(long))
                 //    .AddAnnotation("Timestamp",null);
 
-                entity.AddProperty(AuditableField.CREADOPOR_FIELD, typeof(string));
+                //entity.AddProperty(AuditableField.CREADOPOR_FIELD, typeof(string));
+                modelBuilder.Entity(entity.ClrType).Property<string>(AuditableField.CREADOPOR_FIELD);
 
-                entity.AddProperty(AuditableField.CREADOEN_FIELD, typeof(DateTimeOffset))
-                    .SetValueConverter(ConversionHelper.DateTimeOffsetConverter);
+
+                //entity.AddProperty(AuditableField.CREADOEN_FIELD, typeof(DateTimeOffset))
+                //    .SetValueConverter(ConversionHelper.DateTimeOffsetConverter);
+                modelBuilder.Entity(entity.ClrType).Property<DateTimeOffset>(AuditableField.CREADOEN_FIELD)
+                    .HasConversion(ConversionHelper.DateTimeOffsetConverter);
+
             }
 
             return modelBuilder;
         }
+
+        /// <summary>
+        /// Agrega los campo shadows de Tenant a las entidades que están marcadas 
+        /// con la interfaz ITenant.
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        /// <returns></returns>
+        public static ModelBuilder AddTenantProperty(this ModelBuilder modelBuilder)
+        {
+
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+                .Where(x => typeof(ITenant).IsAssignableFrom(x.ClrType)))
+            {
+                // entity.AddProperty(TenantField.TENANT_FIELD, typeof(string));
+
+                modelBuilder.Entity(entityType.ClrType).Property<string>(TenantField.TENANT_FIELD);
+            }
+            return modelBuilder;
+        }
+
+
+        /// <summary>
+        /// Además agrega el filtro de consulta para entidades marcadas con 
+        /// la interfaz ITenant
+        /// del sistema
+        /// </summary>
+        /// <param name="modelBuilder"></param>
+        /// <param name="tenant"></param>
+        /// <returns></returns>
+        public static ModelBuilder SetTenantFilter(this ModelBuilder modelBuilder, Guid tenant)
+        {
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+                .Where(x => typeof(ITenant).IsAssignableFrom(x.ClrType)))
+            {
+                /*
+                 * Se define para la propiedad Shadows el filtro de consulta.
+                 * Todas las entidades marcadas con la interfaz ITenant se consultaran
+                 * con el filtro Tenant Id.
+                 */
+
+                var parameter = Expression.Parameter(entityType.ClrType, "e");
+                var body = Expression.Equal(
+                    Expression.Call(typeof(EF), nameof(EF.Property), new[] { typeof(string) }, parameter, Expression.Constant(TenantField.TENANT_FIELD)),
+                    Expression.Constant(tenant.ToString()));
+
+                modelBuilder.Entity(entityType.ClrType).HasQueryFilter(Expression.Lambda(body, parameter));
+            }
+
+            return modelBuilder;
+        }
+
     }
 
     internal class TransactionWrapper : IDisposable

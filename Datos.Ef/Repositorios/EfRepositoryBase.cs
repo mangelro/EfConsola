@@ -8,7 +8,7 @@
  */
 
 using System;
-using System.Threading.Tasks.Sources;
+using System.Threading.Tasks;
 
 using Datos.Ef.Excepciones;
 
@@ -23,7 +23,7 @@ namespace Datos.Ef.Repositorios
     /// EfAutorRepository
     /// </summary>
     public class EfRepositoryBase<TEntity, TIdentity> : IRepository<TEntity, TIdentity>
-        where TEntity : class, IAggregateRoot<TEntity,TIdentity>
+        where TEntity : class, IAggregateRoot<TEntity, TIdentity>
         where TIdentity : IEquatable<TIdentity>
     {
 
@@ -31,7 +31,7 @@ namespace Datos.Ef.Repositorios
         protected EfRepositoryBase(EfUoW context)
         {
             Context = context ?? throw new ArgumentNullException(nameof(context));
-            Set =  Context.Set<TEntity>();
+            Set = Context.Set<TEntity>();
         }
 
         protected EfUoW Context { get; }
@@ -41,7 +41,7 @@ namespace Datos.Ef.Repositorios
 
         public virtual TEntity GetById(TIdentity id)
         {
-            return Set.Find(id)??throw new EntidadNoEncontrada($"La Entidad tipo {typeof(TEntity).ShortDisplayName()} [{id}] no existe en el Sistema.");
+            return Set.Find(id) ?? throw new EntidadNoEncontrada($"La Entidad tipo {typeof(TEntity).ShortDisplayName()} [{id}] no existe en el Sistema.");
         }
 
 
@@ -78,7 +78,10 @@ namespace Datos.Ef.Repositorios
             if (!Context.IsBeginning) throw new Exception("Debe encontrarse dentro de una Transacción activa.");
 
 
-            //Permite liberar recursos de la entidad
+            /*
+             * Permite liberar recursos de la entidad
+             * antes de su eliminación
+             */
             if (entity is IDisposable disposable)
                 disposable.Dispose();
 
@@ -109,7 +112,27 @@ namespace Datos.Ef.Repositorios
             Set.Update(entity);
         }
 
-        public TIdentity NextIdentity()
+        public virtual TIdentity NextIdentity()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<TEntity> GetByIdAsync(TIdentity id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task AddAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task UpdateAsync(TEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task DeleteAsync(TEntity entity)
         {
             throw new NotImplementedException();
         }

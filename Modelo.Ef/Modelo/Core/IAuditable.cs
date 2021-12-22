@@ -14,4 +14,6 @@ namespace Modelo.Ef.Core
         public const string CREADOEN_FIELD = "CreadoEn";
 
     }
+
+
 }

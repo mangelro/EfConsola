@@ -37,8 +37,8 @@ namespace Datos.Ef.Configuracion
                 .HasColumnName("ProjectCode")
                 .HasConversion(ConversionHelper.ProyectoCodeConverter);
 
-                b.Property(a => a.Aplicacion)
-                    .HasColumnName("ProjectApp");
+                //b.Property(a => a.Aplicacion)
+                //    .HasColumnName("ProjectApp");
             });
 
 
@@ -49,6 +49,26 @@ namespace Datos.Ef.Configuracion
             builder.Property(p=> p.FechaFinalizacion)
                 .HasColumnName("FechaFin")
                 .HasConversion(ConversionHelper.DateTimeOffsetConverter);
+
+
+            builder.Property(x => x.Items)
+                   .HasField("_items");
+
+            builder.Ignore(x => x.Items);
+
+            builder.HasMany("_items")
+                .WithOne()
+                .HasForeignKey("ProjectId"); 
+
+            /*
+             * Hay que indicar explicitamente el nombre de la propiedad
+             * ya que por defecto usará DBKey (ProyectoDBKey) que es el 
+             * nombre de la propiedad clave en proyecto
+             * Creara una propiedad Shadow ProjectId
+             */
+
+
+
         }
     }
 }

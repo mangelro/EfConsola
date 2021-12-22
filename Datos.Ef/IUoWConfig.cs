@@ -21,12 +21,14 @@ namespace Datos.Ef
     public interface IUoWConfig
     {
         string ConnectionString {get;}
+       
     }
 
 
     public class UoWconfig : IUoWConfig
     {
         public string ConnectionString => @"Data Source=F:\Visual Studio 2019\Proyectos\EfConsola\Consola.Ef\AppData\modelDB.db ";
+
     }
 
 }

@@ -21,7 +21,7 @@ namespace EfConsola.Infraestructura
     /// <summary>
     /// FakeEventPublisher
     /// </summary>
-    public class FakeEventPublisher : IDomainEventPublisher
+    public class FakeEventPublisher : IEventPublisher
     {
 
 

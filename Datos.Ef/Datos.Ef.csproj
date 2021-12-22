@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\FundacionOlivar.DDD.SharedKernel\FundacionOlivar.DDD.SharedKernel\FundacionOlivar.DDD.SharedKernel.csproj" />
+    <ProjectReference Include="..\..\FundacionOlivar\FundacionOlivar.DDD\FundacionOlivar.DDD.csproj" />
     <ProjectReference Include="..\Modelo.Ef\Modelo.Ef.csproj" />
   </ItemGroup>
 

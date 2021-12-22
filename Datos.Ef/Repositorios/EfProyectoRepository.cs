@@ -7,9 +7,13 @@
  *
  */
 
-using FundacionOlivar.DDD.SharedKernel;
+using System;
+using System.Linq;
+
+using Datos.Ef.Excepciones;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 using Modelo.Ef;
 
@@ -22,5 +26,13 @@ namespace Datos.Ef.Repositorios
     {
         public EfProyectoRepository(EfUoW uow) : base(uow)
         { }
+
+        public override Proyecto GetById(ProyectoCode id)
+        {
+            return Set.Where(b => b.Identity == id)
+                .Include("_items") //Eager loading
+                .FirstOrDefault();
+
+        }
     }
 }

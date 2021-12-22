@@ -8,27 +8,31 @@
  */
 
 using System;
+using System.Collections.Generic;
 
 using FundacionOlivar.DDD.Core;
+
+using Modelo.Ef.Core;
+
 
 namespace Modelo.Ef
 {
     /// <summary>
     /// Proyecto
     /// </summary>
-    public class Proyecto : SurrogateEntity<Proyecto, ProyectoCode>, IAuditable
+    public class Proyecto : SurrogateEntity<Proyecto, ProyectoCode>, IAuditable, ITenant
     {
 
         protected Proyecto() { }
 
-        protected Proyecto(ProyectoCode code, Guid app)
+        protected Proyecto(ProyectoCode code)
         {
             Identity = code;
-            Aplicacion = app;
+            //Aplicacion = app;
         }
 
 
-        public Guid Aplicacion { get; }
+        //public Guid Aplicacion { get; }
 
         public DateTimeOffset FechaFinalizacion { get; private set; }
 
@@ -44,13 +48,28 @@ namespace Modelo.Ef
             FechaFinalizacion = fecha;
         }
 
-
-
-
-
-        public static Proyecto NewProyecto(ProyectoCode code, Guid app)
+        private readonly List<ItemProyecto> _items = new List<ItemProyecto>();
+    
+        public void AddItem(string nombreItem)
         {
-            var p = new Proyecto(code, app);
+            _items.Add(new ItemProyecto(nombreItem));
+        }
+
+        public IReadOnlyCollection<ItemProyecto> Items => _items;
+
+
+        public override string ToString()
+        {
+            return $"Proyecto {Nombre} [{Identity}]";
+        }
+
+
+        public static Proyecto NewProyecto(ProyectoCode code)
+        {
+            var p = new Proyecto(code);
+
+            p.AddItem("Item Inicial");
+
             //TODO:EVENTO
             return p;
         }

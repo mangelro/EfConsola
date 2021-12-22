@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Reflection;
 
 using Autofac;
 
 using Datos.Ef;
+using Datos.Ef.Configuracion;
 using Datos.Ef.Repositorios;
 
 using EfConsola.Infraestructura;
@@ -33,12 +35,13 @@ namespace EfConsola
 
                 //CrearAutor(uow, repoFactory);
                 //ConsultarAutor(repoFactory);
-                ModificarAutor(uow,repoFactory);
+                //ModificarAutor(uow,repoFactory);
                 //CrearBlog(uow,repoFactory);
                 //ConsultarBlog(uow, repoFactory);
                 //LimpiarBlogPost(uow, repoFactory);
                 //AddBlogPost(uow);
-                //CrearProyecto(uow, repoFactory);
+               // CrearProyecto(uow, repoFactory);
+                ConsultarProyecto(repoFactory);
             }
 
 
@@ -68,7 +71,6 @@ namespace EfConsola
 
 
         }
-
 
         private static void ConsultarAutor(RepositoryFactory factory)
         {
@@ -163,8 +165,6 @@ namespace EfConsola
 
         }
 
-
-
         private static void AddBlogPost(IUnitOfWork uow, RepositoryFactory factory)
         {
 
@@ -184,11 +184,10 @@ namespace EfConsola
         {
             IProyectoRepository proyectoRepo = repoFactory.GetInstance<IProyectoRepository>();  //uow.GetRepository<IProyectoRepository>();
 
-
-
             unitOfWork.Begin();
 
-            var pro = Proyecto.NewProyecto(ProyectoCode.FromString("cod-12"), Guid.NewGuid());
+            var pro = Proyecto.NewProyecto(ProyectoCode.FromString("cod-12"));
+            //var pro = Proyecto.NewProyecto(ProyectoCode.FromString("cod-12"));
 
             pro.EstablecerNombre("proyecto pepito");
             pro.EstablecerFechaFinalizacion(DateTimeOffset.Now);
@@ -200,24 +199,15 @@ namespace EfConsola
         }
 
 
+        private static void ConsultarProyecto(RepositoryFactory repoFactory)
+        {
+            IProyectoRepository proyectoRepo = repoFactory.GetInstance<IProyectoRepository>();  //uow.GetRepository<IProyectoRepository>();
+
+           Proyecto proyecto= proyectoRepo.GetById(ProyectoCode.FromString("cod-12"));
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            Console.WriteLine(proyecto);
+        }
 
 
         private static IContainer ConfigureAutofac()
@@ -235,7 +225,7 @@ namespace EfConsola
             builder.Register<RepositoryFactory>(ctx =>
             {
                 var c = ctx.Resolve<IComponentContext>();
-                return (t => c.Resolve(t));
+                return t => c.Resolve(t);
             }).SingleInstance();
 
 
@@ -250,28 +240,35 @@ namespace EfConsola
                 .SingleInstance(); //No me gusta 
 
 
-            builder.Register<UnitOfWorkFactory>(ctx =>
-            {
+            //builder.Register<UnitOfWorkFactory>(ctx =>
+            //{
 
-                //var c = ctx.Resolve<IComponentContext>();
-                //return (() => c.Resolve<IUnitOfWork>());
+            //    //var c = ctx.Resolve<IComponentContext>();
+            //    //return (() => c.Resolve<IUnitOfWork>());
 
-                /*
-                 * Es importante que se cree uno nuevo por casa petición de servicio,
-                 * ya que cada contexto (Task) necesita uno distinto
-                 */
-                IDomainEventPublisher publisher = ctx.Resolve<IDomainEventPublisher>();
-                IUoWConfig config = ctx.Resolve<IUoWConfig>();
-
-                return () => new EfUoW(config, publisher);
-            }).InstancePerLifetimeScope();
+            //    /*
+            //     * Es importante que se cree uno nuevo por casa petición de servicio,
+            //     * ya que cada contexto (Task) necesita uno distinto
+            //     */
+            //    IEventPublisher publisher = ctx.Resolve<IEventPublisher>();
+            //    IUoWConfig config = ctx.Resolve<IUoWConfig>();
+            //    ITenantProvider tenant = ctx.Resolve<ITenantProvider>();
+            //    IEntityTypeConfiguration<IEntity> map = ctx.Resolve<IEntityTypeConfiguration<IEntity>>();
+            //    return () => new EfUoW(tenant,config, publisher,map);
+            //}).InstancePerLifetimeScope();
 
 
             builder.RegisterType<FakeEventPublisher>()
-                .As<IDomainEventPublisher>()
+                .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
 
+            builder.RegisterType<TenantProvider>()
+                .AsImplementedInterfaces()
+                .InstancePerLifetimeScope();
 
+            builder.RegisterAssemblyTypes(typeof(EntityMap<,>).Assembly)
+                .AsClosedTypesOf(typeof(IEntityTypeConfiguration<>));
+            
 
             return builder.Build();
         }
